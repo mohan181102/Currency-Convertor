@@ -1,5 +1,4 @@
 export const curreny = [
-    'ALL : Albania Lek',
     'AFN : Afghanistan Afghani',
     'ARS : Argentina Peso',
     'AUD : Australia Dollar',

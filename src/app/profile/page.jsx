@@ -16,17 +16,22 @@ const page = () => {
   const [base_currency, set_base_curreny] = useState("USD");
   const [change_currency, set_change_currency] = useState("INR");
   const [currencies_value, set_currencies_value] = useState(null);
-  const localdata = JSON.parse(localStorage?.getItem("recent"));
+  const [localdata, setlocaldata] = useState([]);
   const [multiplynumm, setmultiplynum] = useState(1);
   const [match, setmatch] = useState(null);
   const [loader, setloader] = useState(false);
+
+  // SET LOCAL DATA
+  if (typeof window != "undefined" && window.localStorage) {
+    const local = JSON.parse(localStorage.getItem("recent"));
+    console.log(local);
+    localdata.length == 0 ? setlocaldata(local) : null;
+  }
 
   const client = new CurrencyAPI(
     "cur_live_EGV25Klp7ItwxZgU2T7jkuF4OLd8LZGAIrPlZq6C"
   );
   const currency_list = curreny;
-  console.log(currency_list);
-  console.log("load", localdata);
 
   // GET USER
   async function user() {
@@ -45,18 +50,12 @@ const page = () => {
   // CURRENCY CHANGE
   async function currencies_change() {
     setloader(true);
-    console.log("bas", base_currency);
-    console.log("cu", change_currency);
+    console.log(base_currency);
     // set local storage
-    localStorage.setItem(
-      "recent",
-      JSON.stringify(
-        Array({
-          base: base_currency,
-          change: change_currency,
-        })
-      )
-    );
+    const localarray = [{ base: base_currency, change: change_currency }];
+    console.log(localarray);
+
+    localStorage.setItem("recent", JSON.stringify(localarray));
 
     const data = await client
       .latest({
@@ -79,6 +78,7 @@ const page = () => {
       toast.success("Logout successfully!!");
     });
   }
+
   return (
     <>
       {/* CREATE MAIN DIV */}
@@ -132,23 +132,13 @@ const page = () => {
                   className={`w-full md:text-sm h-auto text-gray-600 outline-none rounded-md flex items-center p-2 text-xl`}
                   onChange={(e) => set_base_curreny(e.target.value.slice(0, 3))}
                   defaultValue={base_currency}
-                  value={base_currency}
                 >
-                  {/* INPUT SECTION */}
-
-                  <input
-                    onChange={(e) => setmatch(e.target.value)}
-                    value={match}
-                    className={` w-full h-8 outline-none text-[1.3rem] md:text-sm`}
-                  />
-
-                  {/* recent */}
-                  <p className={`w-full text-gray-500 h-auto p-1`}>Recent</p>
                   {localdata.length != 0
-                    ? localdata.map((item) => {
+                    ? localdata.map((item, index) => {
                         return (
                           <>
                             <option
+                              key={index + Date.now()}
                               className={`w-full md:text-sm outline-none overflow-hidden h-auto text-[1.2rem] p-1 ${
                                 item.base.includes(base_currency)
                                   ? " bg-purple-400"
@@ -205,14 +195,14 @@ const page = () => {
                   }
                   defaultValue={change_currency}
                 >
-                  <p className={`w-full text-gray-500 h-auto p-1`}>Recent</p>
                   {localdata.length != 0
-                    ? localdata.map((item) => {
+                    ? localdata.map((item, index) => {
                         return (
                           <>
                             <option
+                              key={index + Date.now()}
                               className={`w-full md:text-sm outline-none overflow-hidden h-auto text-[1.2rem] p-1 ${
-                                item.base.includes(base_currency)
+                                item.change.includes(change_currency)
                                   ? " bg-purple-400"
                                   : ""
                               } `}

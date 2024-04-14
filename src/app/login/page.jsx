@@ -1,14 +1,19 @@
 "use client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
 
 const page = () => {
   const { register, handleSubmit } = useForm();
-  const localuserdata = JSON.parse(localStorage?.getItem("user"));
   const router = useRouter();
+  const [localuserdata, setlocaluserdata] = useState(null);
+  if (typeof window != "undefined" && window.localStorage) {
+    const localuser = JSON.parse(localStorage.getItem("user"));
+    localuserdata == null ? setlocaluserdata(localuser) : null;
+    console.log(localuserdata);
+  }
 
   // SUCCESS
   function success() {
