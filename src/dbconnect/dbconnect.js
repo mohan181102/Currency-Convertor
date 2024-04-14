@@ -11,7 +11,7 @@ export async function connect(){
         })
 
         connection.on('error',(err)=>{
-            console.log('Mongodb connection failed',+err);
+            console.log('Mongodb connection failed',err);
             process.exit()
         })
     } catch (error) {

@@ -18,7 +18,7 @@ export async function POST(NextRequest){
         if(user){
             return NextResponse.json({
                 error:"user alredy exist"
-            })
+            },{status:401})
         }
         
         const salt = await bcryptjs.genSalt(10)
@@ -38,13 +38,14 @@ export async function POST(NextRequest){
         await sendEmail({email, emailType:"VERIFY", userId:saveUser._id})
 
         return NextResponse.json({
-            message:"User registerd succesfully! "
+            message:"User registerd succesfully! ",
+            data:saveUser
         })
 
     } catch (error) {
         console.log(error)
         return NextResponse.json({
-            error:error.message
-        })
+            error:error.message,             
+        },{status:401, statusText:"Something went wrong!"})
     }
 }
