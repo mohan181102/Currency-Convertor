@@ -16,7 +16,7 @@ const page = () => {
   const [base_currency, set_base_curreny] = useState("USD");
   const [change_currency, set_change_currency] = useState("INR");
   const [currencies_value, set_currencies_value] = useState(null);
-  const localdata = JSON.parse(localStorage.getItem("recent"));
+  const localdata = JSON.parse(localStorage?.getItem("recent"));
   const [multiplynumm, setmultiplynum] = useState(1);
   const [match, setmatch] = useState(null);
   const [loader, setloader] = useState(false);

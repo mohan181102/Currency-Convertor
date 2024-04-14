@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 
 const page = () => {
   const { register, handleSubmit } = useForm();
-  const localuserdata = JSON.parse(localStorage.getItem("user"));
+  const localuserdata = JSON.parse(localStorage?.getItem("user"));
   const router = useRouter();
 
   // SUCCESS
