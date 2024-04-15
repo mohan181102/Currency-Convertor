@@ -10,28 +10,30 @@ import {
   faArrowRightArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/navigation";
 
 const page = () => {
   const [data, setdata] = useState(null);
-  const [base_currency, set_base_curreny] = useState("USD");
-  const [change_currency, set_change_currency] = useState("INR");
+  const [base_currency, set_base_curreny] = useState(null);
+  const [change_currency, set_change_currency] = useState(null);
   const [currencies_value, set_currencies_value] = useState(null);
-  const [localdata, setlocaldata] = useState([]);
   const [multiplynumm, setmultiplynum] = useState(1);
   const [match, setmatch] = useState(null);
   const [loader, setloader] = useState(false);
-
-  // SET LOCAL DATA
-  if (typeof window != "undefined" && window.localStorage) {
-    const local = JSON.parse(localStorage.getItem("recent"));
-    console.log(local);
-    localdata.length == 0 ? setlocaldata(local) : null;
-  }
+  const localdata = JSON.parse(localStorage.getItem("recent"));
+  const router = useRouter();
 
   const client = new CurrencyAPI(
     "cur_live_EGV25Klp7ItwxZgU2T7jkuF4OLd8LZGAIrPlZq6C"
   );
   const currency_list = curreny;
+
+  if (localdata) {
+    console.log(localdata);
+    base_currency == null ? set_base_curreny(localdata[0].base) : null;
+    console.log(base_currency);
+    change_currency == null ? set_change_currency(localdata[0].change) : null;
+  }
 
   // GET USER
   async function user() {
@@ -74,9 +76,19 @@ const page = () => {
   // LOGOUT
 
   async function logout() {
-    await axios.get("http://localhost:3000/api/user/logout").then(() => {
-      toast.success("Logout successfully!!");
-    });
+    const logout = await axios
+      .get("http://localhost:3000/api/user/logout")
+      .then(() => {
+        toast.success("Logout successfully!!");
+      })
+      .then(router.push("/login"));
+  }
+
+  // SWAPING
+
+  function swap_currency() {
+    set_base_curreny(change_currency);
+    set_change_currency(base_currency);
   }
 
   return (
@@ -120,7 +132,7 @@ const page = () => {
             className={`w-[90%] min-h-[70%] max-h-max rounded-md gap-4 bg-purple-500 mt-4 p-4 flex  flex-col items-center`}
           >
             <div
-              className={`w-full min-h-[60%] max-h-max flex items-center md:flex-col md:gap-4 lg:justify-center`}
+              className={`w-full min-h-[60%] max-h-max flex items-center md:flex-col md:gap-4 justify-center`}
             >
               <section
                 className={`w-[40%] md:w-full h-auto bg-white rounded-md flex items-center justify-center flex-wrap `}
@@ -170,7 +182,7 @@ const page = () => {
 
               <button
                 className={`w-[5%] md:w-auto text-sm h-auto md:text-sm p-2 font-bold text-purple-500 rounded-md mx-8 bg-white outline-none`}
-                onClick={() => currencies_change()}
+                onClick={() => swap_currency()}
               >
                 {loader ? (
                   <div
@@ -243,24 +255,24 @@ const page = () => {
 
             {/* Value */}
             <section
-              className={`w-full md:w-auto flex items-start flex-col p-2 text-xl`}
+              className={`w-full md:w-auto flex items-center justify-start p-2 text-xl`}
             >
               <label
-                className={`w-full md:w-full  md:text-[1.2rem] md:font-semibold text-white flex items-center justify-center p-2 text-xl`}
+                className={`w-auto md:w-full  md:text-[1.2rem] md:font-semibold text-white flex items-center justify-center p-2 text-xl`}
               >{`Converted number`}</label>
               <input
-                className={` min-w-[40%] md:text-sm md:w-full  max-w-max h-10 outline-none cursor-default rounded-md text-xl p-2 font-bold `}
+                className={` min-w-[40%] md:text-sm md:w-full bg-transparent w-auto  max-w-max h-10 outline-none cursor-default rounded-md text-xl p-2 font-bold `}
                 readOnly
                 value={currencies_value}
                 placeholder="No currency change"
               />
-              <button
-                onClick={() => set_currencies_value(0)}
-                className={`w-auto h-full bg-white text-purple-500 p-1 rounded-md mt-2 md:text-[1rem] flex items-center justify-center`}
-              >
-                Clear
-              </button>
             </section>
+            <button
+              onClick={() => currencies_change()}
+              className={`w-auto p-2 text-xl h-full font-bold bg-white text-purple-500 rounded-md mt-2 md:text-[1rem] flex items-center justify-center`}
+            >
+              Convert
+            </button>
           </div>
         </div>
       </div>

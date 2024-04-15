@@ -4,11 +4,15 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 const page = () => {
   const { register, handleSubmit } = useForm();
   const router = useRouter();
   const [localuserdata, setlocaluserdata] = useState(null);
+  const [loader, setloader] = useState(false);
   if (typeof window != "undefined" && window.localStorage) {
     const localuser = JSON.parse(localStorage.getItem("user"));
     localuserdata == null ? setlocaluserdata(localuser) : null;
@@ -29,11 +33,13 @@ const page = () => {
   // FUNCTION FOR LOGIN
   async function login(formdata) {
     console.log("formdata", formdata);
+    await setloader(true);
     const data = await axios
       .post("http://localhost:3000/api/user/login", formdata)
       .then(() => success())
       .then(() => (formdata.remember ? savedata(formdata) : null))
-      .then(() => router.push("/profile"));
+      .then(() => router.push("/profile"))
+      .finally(setloader(false));
     console.log(data);
   }
 
@@ -47,7 +53,7 @@ const page = () => {
           className={`w-2/4 md:w-3/4 h-auto p-4 bg-white rounded-md text-gray-500 flex items-center flex-col gap-2`}
         >
           <h2
-            className={`w-full md:py-2 md:text-purple-500 h-auto px-2 text-2xl font-bold text-gray-500 flex items-center justify-center  `}
+            className={`w-full md:py-2 h-auto px-2 text-3xl font-bold text-gray-500 flex items-center justify-center  `}
           >
             Login from here
           </h2>
@@ -94,25 +100,34 @@ const page = () => {
                       .setAttribute("type", "password")
               }
             >
-              show
+              <FontAwesomeIcon icon={faEye} />
             </div>
           </div>
+          <div className={`w-[90%] h-auto flex items-center justify-between`}>
+            <label
+              className={`w-[50%] md:text-sm  h-auto px-2 py-4 text-xl font-bold text-gray-500 flex items-center justify-start gap-2`}
+            >
+              <input
+                type="checkbox"
+                className={`w-6 md:text-sm h-6 rounded-md `}
+                {...register("remember", { required: false })}
+              />
+              Remember me
+            </label>
+            {/*  NEW USER*/}
+            <label
+              className={`w-auto md:text-sm h-auto p-2 text-xl font-bold text-purple-500 flex items-center justify-start gap-2`}
+            >
+              <Link href={"/signup"}>New user?</Link>
+            </label>
+          </div>
 
-          <label
-            className={`w-[90%] h-auto px-2 py-4 text-xl font-bold text-gray-500 flex items-center justify-start gap-2`}
-          >
-            <input
-              type="checkbox"
-              className={`w-6 h-6 rounded-md `}
-              {...register("remember", { required: false })}
-            />
-            Remember me
-          </label>
           <button
-            className={`w-full h-14 rounded-md bg-gray-500 text-white text-xl font-bold `}
+            className={`w-full disabled:opacity-50 disabled:cursor-not-allowed h-14 rounded-md bg-gray-500 text-white text-xl font-bold `}
             type="submit"
+            disabled={loader}
           >
-            Submit
+            {loader == true ? "loading..." : "Submit"}
           </button>
         </form>
       </div>

@@ -5,6 +5,7 @@ import { useState } from "react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 const page = () => {
   const { handleSubmit, register } = useForm();
@@ -46,20 +47,20 @@ const page = () => {
       >
         <form
           onSubmit={handleSubmit(signup)}
-          className={`w-2/4 h-auto p-4 bg-white rounded-md text-gray-500 flex items-center flex-col gap-2`}
+          className={`w-2/4 h-auto p-4 md:w-[75%] md:h-auto bg-white rounded-md text-gray-500 flex items-center flex-col gap-2`}
         >
           <h2
-            className={`w-full h-auto px-2 text-2xl font-bold text-gray-500 flex items-center justify-center  `}
+            className={`w-full md:mb-2 md:text-2xl h-auto px-2 text-3xl font-bold text-gray-500 flex items-center justify-center  `}
           >
             Signup from here
           </h2>
           <label
-            className={`w-[90%] h-auto px-2 text-xl font-bold text-gray-500 flex items-center justify-start `}
+            className={`w-[90%] h-auto md:text-[1.2rem] px-2 text-xl font-bold text-gray-500 flex items-center justify-start `}
           >
             Username:-{" "}
           </label>
           <input
-            className={` w-[90%] h-14 p-2 rounded-md border-2 border-spacing-1 border-gray-500 text-xl outline-none flex items-center justify-start`}
+            className={` w-[90%] md:text-sm h-14 p-2 rounded-md border-2 border-spacing-1 border-gray-500 text-xl outline-none flex items-center justify-start`}
             type="text"
             name="username"
             id="username"
@@ -70,12 +71,12 @@ const page = () => {
             {...register("username", { required: true })}
           />
           <label
-            className={`w-[90%] h-auto px-2 text-xl font-bold text-gray-500 flex items-center justify-start `}
+            className={`w-[90%] md:text-[1.2rem] h-auto px-2 text-xl font-bold text-gray-500 flex items-center justify-start `}
           >
             Email:-{" "}
           </label>
           <input
-            className={` w-[90%] h-14 p-2 rounded-md border-2 border-spacing-1 border-gray-500 text-xl outline-none flex items-center justify-start`}
+            className={` w-[90%] md:text-sm h-14 p-2 rounded-md border-2 border-spacing-1 border-gray-500 text-xl outline-none flex items-center justify-start`}
             type="text"
             id="email"
             name="email"
@@ -86,12 +87,12 @@ const page = () => {
             {...register("email", { required: true })}
           />
           <label
-            className={`w-[90%] h-auto px-2 text-xl font-bold text-gray-500 flex items-center justify-start `}
+            className={`w-[90%] md:text-[1.2rem] h-auto px-2 text-xl font-bold text-gray-500 flex items-center justify-start `}
           >
             Password:-{" "}
           </label>
           <input
-            className={` w-[90%] h-14 p-2 rounded-md border-2 border-spacing-1 border-gray-500 text-xl outline-none flex items-center justify-start`}
+            className={` w-[90%] md:text-sm h-14 p-2 rounded-md border-2 border-spacing-1 border-gray-500 text-xl outline-none flex items-center justify-start`}
             type="password"
             id="password"
             name="password"
@@ -101,19 +102,26 @@ const page = () => {
             placeholder="your password"
             {...register("password", { required: true, min: 8 })}
           />
-
-          <label
-            className={`w-[90%] h-auto px-2 py-4 text-xl font-bold text-gray-500 flex items-center justify-start gap-2`}
-          >
-            <input
-              type="checkbox"
-              className={`w-6 h-6 rounded-md `}
-              {...register("remember", { required: false })}
-            />
-            Remember me
-          </label>
+          <div className={`w-[90%] h-auto flex items-center justify-between`}>
+            <label
+              className={`w-[50%] md:text-sm  h-auto px-2 py-4 text-xl font-bold text-gray-500 flex items-center justify-start gap-2`}
+            >
+              <input
+                type="checkbox"
+                className={`w-6 md:text-sm h-6 rounded-md `}
+                {...register("remember", { required: false })}
+              />
+              Remember me
+            </label>
+            {/*  NEW USER*/}
+            <label
+              className={`w-auto md:text-sm h-auto p-2 text-xl font-bold text-purple-500 flex items-center justify-start gap-2`}
+            >
+              <Link href={"/login"}>Already user?</Link>
+            </label>
+          </div>
           <button
-            className={`w-full h-14 rounded-md bg-gray-500 text-white text-xl font-bold `}
+            className={`w-full md:text-sm h-14 rounded-md bg-gray-500 text-white text-xl font-bold `}
             type="submit"
             // onClick={() => setloder(true)}
           >

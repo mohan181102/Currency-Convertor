@@ -5,12 +5,11 @@ connect()
 
 export async function GET(NextRequest){
     try {
-        const req = await NextRequest.json()
         const response = NextResponse.json({
             message:"logout success!",
         })
         response.cookies.set("token","",{
-            httpOnly
+            httpOnly:true
         })
         return(
             response
