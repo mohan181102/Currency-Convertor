@@ -8,9 +8,12 @@ import {
   faUser,
   faRightFromBracket,
   faArrowRightArrowLeft,
+  faMagic,
+  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const page = () => {
   const [data, setdata] = useState(null);
@@ -54,7 +57,12 @@ const page = () => {
     setloader(true);
     console.log(base_currency);
     // set local storage
-    const localarray = [{ base: base_currency, change: change_currency }];
+    const localarray = [
+      {
+        base: base_currency,
+        change: change_currency,
+      },
+    ];
     console.log(localarray);
 
     localStorage.setItem("recent", JSON.stringify(localarray));
@@ -74,6 +82,7 @@ const page = () => {
   }
 
   // LOGOUT
+  console.log(data);
 
   async function logout() {
     const logout = await axios
@@ -81,7 +90,7 @@ const page = () => {
       .then(() => {
         toast.success("Logout successfully!!");
       })
-      .then(router.push("/login"));
+      .then(router.back);
   }
 
   // SWAPING
@@ -98,28 +107,46 @@ const page = () => {
         className={`min-w-full min-h-screen max-h-max max-w-max p-10 gap-4 bg-purple-300 flex items-center flex-col`}
       >
         <div
-          className={`w-[90%] h-16 p-4 bg-white rounded-md flex items-center justify-between`}
+          className={`w-[90%] h-16 p-4 md:h-12 bg-white rounded-md flex items-center justify-between`}
         >
           {/* username */}
-          <h2
-            className={`w-auto flex items-center cursor-pointer justify-center gap-1 h-full text-xl font-bold text-purple-400 `}
+          <h4
+            onClick={() => router.push("/profile/userdetails")}
+            className={`w-auto flex items-center md:text-sm cursor-pointer justify-between gap-1 h-full text-xl font-bold text-purple-400 `}
           >
-            <FontAwesomeIcon
-              icon={faUser}
-              className={`scale-110 md:scale-100`}
-            />
-            {`User`}
-          </h2>
-          {/* logout btn */}
-          <button
-            className={`h-full w-auto text-xl flex items-center justify-center gap-1 cursor-pointer font-bold text-purple-400`}
-            onClick={() => logout()}
-          >
-            {`Logout`}
-            <FontAwesomeIcon icon={faRightFromBracket} />
-          </button>
+            {data != null ? (
+              <Image
+                width={200}
+                height={200}
+                alt=""
+                className={` w-10 h-10 md:w-6 md:h-6  rounded-md bg-cover object-cover bg-center`}
+                src={data?.profilePhoto}
+              />
+            ) : (
+              <FontAwesomeIcon icon={faUser} />
+            )}
+            {`${data?.username}`}
+          </h4>
+          {/* IMAGE TRANFORMATION */}
+          <section className={`flex items-center justify-center gap-4 mx-2`}>
+            <button
+              className={`h-full md:text-sm  w-auto text-2xl px-2 font-bold flex items-center  bg-gradient-to-r from-violet-500 to-fuchsia-500  justify-center text-white rounded-md p-2`}
+              onClick={() => router.push("/profile/transformation")}
+            >
+              {" "}
+              <FontAwesomeIcon icon={faStar} />
+              {`ImageTransformation`}
+            </button>
+            {/* logout btn */}
+            <button
+              className={`h-full w-auto text-xl flex items-center justify-center gap-1 cursor-pointer font-bold text-purple-400`}
+              onClick={() => logout()}
+            >
+              {`Logout`}
+              <FontAwesomeIcon icon={faRightFromBracket} />
+            </button>
+          </section>
         </div>
-
         {/* box */}
 
         <div
@@ -143,7 +170,7 @@ const page = () => {
                 <select
                   className={`w-full md:text-sm h-auto text-gray-600 outline-none rounded-md flex items-center p-2 text-xl`}
                   onChange={(e) => set_base_curreny(e.target.value.slice(0, 3))}
-                  defaultValue={base_currency}
+                  value={base_currency}
                 >
                   {localdata.length != 0
                     ? localdata.map((item, index) => {
@@ -156,6 +183,7 @@ const page = () => {
                                   ? " bg-purple-400"
                                   : ""
                               } `}
+                              onClick={() => set_base_curreny(item.base)}
                             >
                               {item.base}
                             </option>
@@ -171,6 +199,7 @@ const page = () => {
                             item.includes(base_currency) ? " bg-purple-400" : ""
                           } `}
                           key={index}
+                          onClick={() => set_base_curreny(item)}
                         >
                           {item}
                         </option>
@@ -205,7 +234,7 @@ const page = () => {
                   onChange={(e) =>
                     set_change_currency(e.target.value.slice(0, 3))
                   }
-                  defaultValue={change_currency}
+                  value={change_currency}
                 >
                   {localdata.length != 0
                     ? localdata.map((item, index) => {
@@ -218,6 +247,7 @@ const page = () => {
                                   ? " bg-purple-400"
                                   : ""
                               } `}
+                              onClick={() => set_change_currency(item.change)}
                             >
                               {item.change}
                             </option>
@@ -236,6 +266,7 @@ const page = () => {
                               : ""
                           } `}
                           key={index * 2}
+                          onClick={() => set_change_currency(item)}
                         >
                           {item}
                         </option>
@@ -263,7 +294,7 @@ const page = () => {
               <input
                 className={` min-w-[40%] md:text-sm md:w-full bg-transparent w-auto  max-w-max h-10 outline-none cursor-default rounded-md text-xl p-2 font-bold `}
                 readOnly
-                value={currencies_value}
+                value={currencies_value + `  ${change_currency}`}
                 placeholder="No currency change"
               />
             </section>

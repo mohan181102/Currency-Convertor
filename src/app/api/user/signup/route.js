@@ -9,8 +9,9 @@ connect()
 export async function POST(NextRequest){
     try {
         const reqBody = await NextRequest.json()
-        const {email, username, password} = reqBody
+        const {email, username, password,  profilePhoto} = reqBody
         // VALIDATION
+        
         console.log("body:- ",reqBody)
 
         const user = await User.findOne({email})
@@ -27,7 +28,8 @@ export async function POST(NextRequest){
         const newUser = new User({
             username,
             email,
-            password:hashedPassword
+            password:hashedPassword,
+            profilePhoto
         })
         
         const saveUser = await newUser.save()

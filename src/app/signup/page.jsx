@@ -6,12 +6,21 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { CldUploadWidget } from "next-cloudinary";
+import Image from "next/image";
 
 const page = () => {
   const { handleSubmit, register } = useForm();
   const [loader, setloder] = useState(false);
   const [keyplace, setkeyplace] = useState(null);
+  const [profilephoto, setprofilephoto] = useState(null);
   const router = useRouter();
+
+  // UPLOAD IN CLOUDNARY
+
+  async function profilephotoupload(imagePath) {}
 
   // CREATE TOASTER
 
@@ -20,7 +29,7 @@ const page = () => {
   }
 
   async function signup(data) {
-    await setloder(true);
+    setloder(true);
     console.log(loader);
     console.log(data);
     const newUser = await axios
@@ -43,7 +52,7 @@ const page = () => {
   return (
     <>
       <div
-        className={`w-screen h-screen bg-purple-300 flex items-center justify-center`}
+        className={`w-screen h-screen py-5 bg-purple-300 flex items-center justify-center`}
       >
         <form
           onSubmit={handleSubmit(signup)}
@@ -54,6 +63,47 @@ const page = () => {
           >
             Signup from here
           </h2>
+
+          {/*  CREATE IMAGE SECTION */}
+          <div
+            className={`w-full md:w-[3/4] md:h-full my-1 h-[140px]  flex items-center justify-center`}
+          >
+            <div
+              className={`w-[140px] overflow-hidden h-full border mt-2 border-spacing-1 border-gray-500  cursor-pointer rounded-md bg-center bg-cover flex items-center justify-center text-[1rem] text-gray-500 font-medium`}
+            >
+              {profilephoto == null ? (
+                <p className={`flex flex-col items-center p-2`}>
+                  {" "}
+                  <FontAwesomeIcon icon={faPlus} />
+                  <CldUploadWidget
+                    onSuccess={(e) => {
+                      console.log(e.info.url), setprofilephoto(e.info.url);
+                    }}
+                    uploadPreset="ai-world"
+                  >
+                    {({ open }) => {
+                      return (
+                        <button onClick={() => open()}>Profile Photo</button>
+                      );
+                    }}
+                  </CldUploadWidget>
+                </p>
+              ) : (
+                <Image
+                  src={`${profilephoto}`}
+                  width={400}
+                  height={400}
+                  alt="missing?"
+                  name="profilePhoto"
+                  className={`w-full h-full bg-cover bg-center`}
+                  {...register("profilePhoto", {
+                    required: false,
+                    value: profilephoto,
+                  })}
+                />
+              )}
+            </div>
+          </div>
           <label
             className={`w-[90%] h-auto md:text-[1.2rem] px-2 text-xl font-bold text-gray-500 flex items-center justify-start `}
           >
@@ -134,3 +184,5 @@ const page = () => {
 };
 
 export default page;
+
+// res.cloudinary.com
